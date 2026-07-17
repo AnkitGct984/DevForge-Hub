@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Calculator</title>
+    <link rel="stylesheet" href="style.css">
+    <style>
+        /* Premium dark theme calculator styles */
+        .calc-container {
+            max-width: 360px;
+            margin: 4rem auto;
+            background: rgba(255,255,255,0.08);
+            backdrop-filter: blur(12px);
+            border-radius: 1.5rem;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.25);
+            padding: 2rem;
+            color: #f0f0f0;
+        }
+        .calc-display {
+            width: 100%;
+            height: 3rem;
+            background: rgba(0,0,0,0.4);
+            border: none;
+            border-radius: .75rem;
+            font-size: 1.5rem;
+            text-align: right;
+            padding: .5rem 1rem;
+            color: #fff;
+            margin-bottom: 1rem;
+        }
+        .calc-buttons {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: .75rem;
+        }
+        .calc-btn {
+            background: rgba(255,255,255,0.12);
+            border: none;
+            border-radius: .5rem;
+            font-size: 1.2rem;
+            color: #e0e0e0;
+            padding: .75rem;
+            cursor: pointer;
+            transition: background .2s, transform .1s;
+        }
+        .calc-btn:hover {
+            background: rgba(255,255,255,0.2);
+        }
+        .calc-btn:active {
+            transform: scale(0.96);
+        }
+        .calc-btn.op {
+            background: rgba(255,165,0,0.2);
+            color: #ffe0b2;
+        }
+    </style>
+</head>
+<body>
+    <section class="hero" id="calculator-page">
+        <div class="calc-container">
+            <input type="text" id="calc-display" class="calc-display" readonly placeholder="0" />
+            <div class="calc-buttons">
+                <button class="calc-btn" data-val="7">7</button>
+                <button class="calc-btn" data-val="8">8</button>
+                <button class="calc-btn" data-val="9">9</button>
+                <button class="calc-btn op" data-val="/">÷</button>
+
+                <button class="calc-btn" data-val="4">4</button>
+                <button class="calc-btn" data-val="5">5</button>
+                <button class="calc-btn" data-val="6">6</button>
+                <button class="calc-btn op" data-val="*">×</button>
+
+                <button class="calc-btn" data-val="1">1</button>
+                <button class="calc-btn" data-val="2">2</button>
+                <button class="calc-btn" data-val="3">3</button>
+                <button class="calc-btn op" data-val="-">−</button>
+
+                <button class="calc-btn" data-val="0">0</button>
+                <button class="calc-btn" data-val=".">.</button>
+                <button class="calc-btn op" id="calc-eq">=</button>
+                <button class="calc-btn op" data-val="+">+</button>
+
+                <button class="calc-btn op" id="calc-clear" style="grid-column: span 4; background: rgba(220,20,60,0.2); color:#ffcccc;">Clear</button>
+            </div>
+        </div>
+    </section>
+    <script>
+        const display = document.getElementById('calc-display');
+        const buttons = document.querySelectorAll('.calc-btn[data-val]');
+        const clearBtn = document.getElementById('calc-clear');
+        const eqBtn = document.getElementById('calc-eq');
+        let expression = '';
+        buttons.forEach(btn => {
+            btn.addEventListener('click', () => {
+                expression += btn.dataset.val;
+                display.value = expression;
+            });
+        });
+        clearBtn.addEventListener('click', () => {
+            expression = '';
+            display.value = '';
+        });
+        eqBtn.addEventListener('click', () => {
+            try {
+                // Replace x division symbol if any
+                const safeExp = expression.replace(/÷/g, '/');
+                // Evaluate safely
+                const result = Function('"use strict";return (' + safeExp + ')')();
+                display.value = result;
+                expression = '' + result;
+            } catch (e) {
+                display.value = 'Error';
+                expression = '';
+            }
+        });
+    </script>
+</body>
+</html>

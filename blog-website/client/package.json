@@ -1,0 +1,13 @@
+{
+  "name": "blog-website-client",
+  "version": "1.0.0",
+  "description": "Blog Website Frontend",
+  "main": "index.html",
+  "scripts": {
+    "serve": "python -m http.server 8000",
+    "serve-node": "npx http-server -p 8000"
+  },
+  "keywords": ["blog", "frontend", "html", "css", "javascript"],
+  "author": "",
+  "license": "ISC"
+}

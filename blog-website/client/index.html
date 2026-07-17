@@ -1,0 +1,269 @@
+cd d:\darling\blog-website\client
+python -m http.server 8000
+Then open: http://localhost:8000<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Blog Website - Share Your Stories</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/responsive.css">
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="nav-brand">
+                <h1>📝 BlogHub</h1>
+            </div>
+            <ul class="nav-menu" id="navMenu">
+                <li><a href="#" onclick="showHome()">Home</a></li>
+                <li><a href="#" onclick="showBlogs()">All Blogs</a></li>
+                <li><a href="#" onclick="showCategories()">Categories</a></li>
+                <li id="authLink"><a href="#" onclick="showAuth()">Login</a></li>
+                <li id="userLink" style="display:none;">
+                    <a href="#" onclick="toggleUserMenu()">
+                        <span id="userName">User</span> ▼
+                    </a>
+                    <div class="user-dropdown" id="userDropdown">
+                        <a href="#" onclick="showDashboard()">Dashboard</a>
+                        <a href="#" onclick="showProfile()">Profile</a>
+                        <a href="#" onclick="createBlogPage()">Create Blog</a>
+                        <a href="#" onclick="logout()">Logout</a>
+                    </div>
+                </li>
+            </ul>
+            <button class="hamburger" id="hamburger">☰</button>
+        </div>
+    </nav>
+
+    <!-- Search Bar -->
+    <div class="search-section" id="searchSection" style="display:none;">
+        <div class="search-container">
+            <input type="text" id="searchInput" placeholder="Search blogs by title, author, or category..." onkeyup="searchBlogs()">
+            <select id="categoryFilter" onchange="filterByCategory()">
+                <option value="">All Categories</option>
+                <option value="Technology">Technology</option>
+                <option value="Programming">Programming</option>
+                <option value="Travel">Travel</option>
+                <option value="Food">Food</option>
+                <option value="Education">Education</option>
+                <option value="Sports">Sports</option>
+                <option value="Business">Business</option>
+            </select>
+        </div>
+    </div>
+
+    <!-- Main Content Area -->
+    <main class="main-content">
+        <!-- Home Section -->
+        <section id="homeSection" class="section active">
+            <div class="hero">
+                <h2>Welcome to BlogHub</h2>
+                <p>Share your thoughts and stories with the world</p>
+                <button class="btn btn-primary" onclick="showAuth()">Get Started</button>
+            </div>
+
+            <div class="featured-section">
+                <h2>📰 Latest Articles</h2>
+                <div class="blog-grid" id="latestBlogs">
+                    <div class="loading">Loading blogs...</div>
+                </div>
+            </div>
+
+            <div class="trending-section">
+                <h2>🔥 Trending</h2>
+                <div class="blog-grid" id="trendingBlogs">
+                    <div class="loading">Loading trending blogs...</div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Authentication Section -->
+        <section id="authSection" class="section">
+            <div class="auth-container">
+                <div class="auth-form">
+                    <h2 id="authTitle">Login</h2>
+                    
+                    <div id="loginForm">
+                        <input type="email" id="loginEmail" placeholder="Email" class="input">
+                        <input type="password" id="loginPassword" placeholder="Password" class="input">
+                        <button class="btn btn-primary"
+                        itch">Don't have account? <a href="#" onclick="toggleAuthForm()">Register here</a></p>
+                    </div>
+
+                    <div id="registerForm" style="display:none;">
+                        <input type="text" id="registerUsername" placeholder="Username" class="input">
+                        <input type="email" id="registerEmail" placeholder="Email" class="input">
+                        <input type="password" id="registerPassword" placeholder="Password" class="input">
+                        <input type="password" id="registerConfirm" placeholder="Confirm Password" class="input">
+                        <button class="btn btn-primary" onclick="register()">Register</button>
+                        <p class="auth-switch">Already have account? <a href="#" onclick="toggleAuthForm()">Login here</a></p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- All Blogs Section -->
+        <section id="blogsSection" class="section">
+            <div class="blogs-container">
+                <h2>All Blogs</h2>
+                <div class="blog-grid" id="allBlogs">
+                    <div class="loading">Loading blogs...</div>
+                </div>
+                <div class="pagination" id="pagination"></div>
+            </div>
+        </section>
+
+        <!-- Categories Section -->
+        <section id="categoriesSection" class="section">
+            <div class="categories-container">
+                <h2>Browse by Category</h2>
+                <div class="categories-grid">
+                    <div class="category-card" onclick="filterByCategory('Technology')">
+                        <h3>💻 Technology</h3>
+                    </div>
+                    <div class="category-card" onclick="filterByCategory('Programming')">
+                        <h3>🖥️ Programming</h3>
+                    </div>
+                    <div class="category-card" onclick="filterByCategory('Travel')">
+                        <h3>✈️ Travel</h3>
+                    </div>
+                    <div class="category-card" onclick="filterByCategory('Food')">
+                        <h3>🍕 Food</h3>
+                    </div>
+                    <div class="category-card" onclick="filterByCategory('Education')">
+                        <h3>📚 Education</h3>
+                    </div>
+                    <div class="category-card" onclick="filterByCategory('Sports')">
+                        <h3>⚽ Sports</h3>
+                    </div>
+                    <div class="category-card" onclick="filterByCategory('Business')">
+                        <h3>💼 Business</h3>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Dashboard Section -->
+        <section id="dashboardSection" class="section">
+            <div class="dashboard-container">
+                <h2>My Dashboard</h2>
+                <div class="dashboard-stats">
+                    <div class="stat-card">
+                        <h3 id="myBlogsCount">0</h3>
+                        <p>My Blogs</p>
+                    </div>
+                    <div class="stat-card">
+                        <h3 id="totalViews">0</h3>
+                        <p>Total Views</p>
+                    </div>
+                </div>
+                <button class="btn btn-primary" onclick="createBlogPage()">📝 Create New Blog</button>
+                <div class="my-blogs" id="myBlogs">
+                    <div class="loading">Loading your blogs...</div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Create Blog Section -->
+        <section id="createBlogSection" class="section">
+            <div class="create-blog-container">
+                <h2>Create New Blog</h2>
+                <form onsubmit="submitBlog(event)" class="blog-form">
+                    <input type="text" id="blogTitle" placeholder="Blog Title" class="input" required>
+                    <input type="text" id="blogDescription" placeholder="Short Description" class="input">
+                    <textarea id="blogContent" placeholder="Write your blog content here..." class="textarea" required></textarea>
+                    <select id="blogCategory" class="input" required>
+                        <option value="">Select Category</option>
+                        <option value="Technology">Technology</option>
+                        <option value="Programming">Programming</option>
+                        <option value="Travel">Travel</option>
+                        <option value="Food">Food</option>
+                        <option value="Education">Education</option>
+                        <option value="Sports">Sports</option>
+                        <option value="Business">Business</option>
+                    </select>
+                    <input type="text" id="blogTags" placeholder="Tags (comma separated)" class="input">
+                    <input type="url" id="blogImage" placeholder="Featured Image URL" class="input">
+                    <button type="submit" class="btn btn-primary">Publish Blog</button>
+                </form>
+            </div>
+        </section>
+
+        <!-- Blog Detail Section -->
+        <section id="blogDetailSection" class="section">
+            <div class="blog-detail-container">
+                <article class="blog-article" id="blogArticle">
+                    <h1 id="detailTitle"></h1>
+                    <div class="article-meta">
+                        <span id="detailAuthor"></span>
+                        <span id="detailDate"></span>
+                        <span id="detailCategory"></span>
+                        <span id="detailViews"></span>
+                    </div>
+                    <img id="detailImage" src="" alt="Featured Image" class="article-image">
+                    <div id="detailContent" class="article-content"></div>
+                    
+                    <div class="article-actions">
+                        <button class="btn btn-secondary" onclick="toggleLike()" id="likeBtn">
+                            ❤️ <span id="likeCount">0</span> Likes
+                        </button>
+                        <button class="btn btn-secondary" onclick="shareArticle()">
+                            📤 Share
+                        </button>
+                    </div>
+                </article>
+
+                <!-- Comments Section -->
+                <section class="comments-section" id="commentsSection">
+                    <h2>Comments</h2>
+                    <div id="commentForm" style="display:none;">
+                        <textarea id="commentText" placeholder="Write a comment..." class="textarea"></textarea>
+                        <button class="btn btn-primary" onclick="submitComment()">Post Comment</button>
+                    </div>
+                    <div class="comments-list" id="commentsList">
+                        <div class="loading">Loading comments...</div>
+                    </div>
+                </section>
+            </div>
+        </section>
+
+        <!-- Profile Section -->
+        <section id="profileSection" class="section">
+            <div class="profile-container">
+                <h2>User Profile</h2>
+                <div class="profile-card" id="profileCard">
+                    <img id="profilePicture" src="" alt="Profile Picture" class="profile-picture">
+                    <h3 id="profileUsername"></h3>
+                    <p id="profileEmail"></p>
+                    <p id="profileBio"></p>
+                    <button class="btn btn-secondary" onclick="editProfile()">Edit Profile</button>
+                </div>
+                <div id="editProfileForm" style="display:none;" class="edit-profile-form">
+                    <input type="text" id="editUsername" placeholder="Username" class="input">
+                    <textarea id="editBio" placeholder="Bio" class="textarea"></textarea>
+                    <input type="url" id="editProfilePicture" placeholder="Profile Picture URL" class="input">
+                    <button class="btn btn-primary" onclick="saveProfile()">Save Changes</button>
+                    <button class="btn btn-secondary" onclick="cancelEditProfile()">Cancel</button>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Modal for Blog Preview -->
+    <div id="blogModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeBlogModal()">&times;</span>
+            <div id="modalBlogDetail"></div>
+        </div>
+    </div>
+
+    <!-- Toast Notification -->
+    <div id="toast" class="toast"></div>
+
+    <!-- Scripts -->
+    <script src="js/api.js"></script>
+    <script src="js/app.js"></script>
+</body>
+</html>
